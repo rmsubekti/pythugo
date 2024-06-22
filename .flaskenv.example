@@ -1,0 +1,3 @@
+GITHUB_CLIENT_ID=<<secret>>
+GITHUB_CLIENT_SECRET=<<secret>>
+MYSQL_URI=mysql://pythugo:pythugo@127.0.0.1:3306/pythugo
