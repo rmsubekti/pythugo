@@ -12,8 +12,8 @@ class Author(db.Model):
     __tablename__ = 'author'
     id: Mapped[int] = mapped_column(primary_key=True)
     username : Mapped[str] = mapped_column(String(64), unique=True)
-    name : Mapped[str] = mapped_column(String(100))
-    avatar_url : Mapped[str] = mapped_column(String(200))
+    name : Mapped[Optional[str]] = mapped_column(String(100))
+    avatar_url : Mapped[Optional[str]] = mapped_column(String(200))
     email : Mapped[Optional[str]] = mapped_column(String(100))
     created_date: Mapped[datetime] = mapped_column(DateTime(timezone=True),insert_default=func.now())
     github_token: Mapped["GithubToken"] = relationship(back_populates="author")

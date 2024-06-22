@@ -6,3 +6,4 @@ pythugo_env
 passenger_wsgi.py
 public
 tmp
+migrations/*
