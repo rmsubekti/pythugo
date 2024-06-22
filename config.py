@@ -1,5 +1,7 @@
 import os
+from dotenv import load_dotenv 
 
+load_dotenv(".flaskenv")
 SECRET_KEY = os.urandom(32)
 
 # Grabs the folder where the script runs.
