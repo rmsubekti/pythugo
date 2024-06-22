@@ -13,6 +13,7 @@ cryptography==42.0.8
 Deprecated==1.2.14
 Flask==3.0.3
 Flask-Migrate==4.0.7
+Flask-MySQLdb==2.0.0
 Flask-SQLAlchemy==3.1.1
 frozenlist==1.4.1
 github==1.2.7
