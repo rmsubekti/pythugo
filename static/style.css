@@ -132,3 +132,10 @@ html {
     align-self: start;
     min-width: 10em;
   }
+
+  .sidebar-tree{
+    max-width: 250px;
+    max-height: 80vh;
+    overflow-x: scroll;
+    overflow-y: scroll;
+  }

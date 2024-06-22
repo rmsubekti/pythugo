@@ -56,7 +56,7 @@ def github_authorize():
         LOGGER.error(f"SQLAlchemyError when creating user: {e}")
     except Exception as e:
         LOGGER.error(f"Unexpected error when creating user: {e}")
-    return redirect('/')
+    return redirect('/blog')
 
 def logout():
     session["user_id"]=None

@@ -1,14 +1,48 @@
 {% extends 'base.html' %}
+
 {% block header %}
-  <h1>{% block title %}Posts{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('blog_bp.create') }}">New</a>
-  {% endif %}
+<h1>{{ blog.name}}</h1>
+branch {{blog.branch}}
 {% endblock %}
 
-{% block content %}
-      <h1>{{ blog.name}}</h1>
-      branch {{blog.branch}}  
-      data {{ data }}
-      {{tree}}
-{% endblock %}
+{%- block content -%}
+<div class="sidebar-tree">
+  <ul>
+    {% for item in data.tree %}
+    {% if item.path == "content" %}
+    <li id="{{item.type}}-{{item.sha}}">
+      <div onclick=openItem("{{item.type}}","{{item.sha}}");>{{item.path}}</div>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+
+{%- endblock -%}
+
+{% block footer %}
+<script type="text/javascript">
+  async function openItem(type, sha) {
+    const response = await fetch(`/blog/{{blog.id}}/${type}/${sha}`);
+    const data = await response.json();
+    if (type === "tree") {
+      const newList = document.createElement("ul");
+      data.tree.forEach(v => {
+        const itemList = document.createElement("li");
+        itemList.setAttribute("id", `${v.type}-${v.sha}`)
+        const itemContent = document.createElement("div");
+        const text = document.createTextNode(v.path);
+        if (v.path.endsWith(".md") || v.type === "tree") {
+          itemContent.setAttribute("onclick", `openItem("${v.type}", "${v.sha}")`)
+        }
+        itemContent.appendChild(text)
+        itemList.appendChild(itemContent)
+        newList.appendChild(itemList)
+      });
+      document.getElementById(`${type}-${sha}`).appendChild(newList)
+    } else {
+      console.log(data);
+    }
+  }
+</script>
+{% endblock%}
