@@ -15,7 +15,7 @@ branch {{blog.branch}}
       {% for item in data.tree %}
       {% if item.path == "content" %}
       <li id="{{item.type}}-{{item.sha}}">
-        <div onclick=openItem("{{item.type}}","{{item.sha}}");>
+        <div onclick=openItem("{{item.type}}","{{item.sha}}","{{item.path}}");>
           {% if item.type == "tree" %}📁{% endif %} {{item.path}}
         </div>
       </li>
@@ -36,8 +36,8 @@ branch {{blog.branch}}
 <script type="text/javascript">
   const Editor = toastui.Editor;
   var newLine = "\n";
-  var data = "";
-
+  var filePath = "";
+  var hash="";
   const editor = new Editor({
     el: document.querySelector('#editor'),
     height: '500px',
@@ -46,9 +46,9 @@ branch {{blog.branch}}
     initialValue: "## select a markdown file from left sidebar to edit"
   });
 
-  async function openItem(type, sha) {
+  async function openItem(type, sha, path) {
     const response = await fetch(`/blog/{{blog.id}}/${type}/${sha}`);
-    data = await response.json();
+    const data = await response.json();
     if (type === "tree") {
       const newList = document.createElement("ul");
       data.tree.forEach(v => {
@@ -67,7 +67,7 @@ branch {{blog.branch}}
         }
         const text = document.createTextNode(icon + v.path);
         if (v.path.endsWith(".md") || v.type === "tree") {
-          itemContent.setAttribute("onclick", `openItem("${v.type}", "${v.sha}")`)
+          itemContent.setAttribute("onclick", `openItem("${v.type}", "${v.sha}", "${v.path}")`)
         }
         itemContent.appendChild(text)
         itemList.appendChild(itemContent)
@@ -75,6 +75,8 @@ branch {{blog.branch}}
       });
       document.getElementById(`${type}-${sha}`).appendChild(newList)
     } else {
+      filePath=path
+      hash=data.sha 
       var md = data.content.split("---\n");
       if (md.length < 2) {
         newLine = "\r\n"
@@ -146,7 +148,22 @@ branch {{blog.branch}}
   }
 
   function Save() {
-    console.log(getContent());
+    fetch(`/blog/{{blog.id}}/blob/${hash}`, {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      //make sure to serialize your JSON body
+      body: JSON.stringify({
+        path: filePath,
+        content: getContent()
+      })
+    })
+      .then((response) => {
+        //do something awesome that makes the world a better place
+      });
   }
 </script>
 {% endblock%}

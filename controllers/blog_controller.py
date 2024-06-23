@@ -1,4 +1,5 @@
 import sys
+import os
 import base64
 from flask import render_template, redirect, url_for, request, abort, session,g, flash
 from controllers.auth_controller import login_required
@@ -77,6 +78,19 @@ def getBlob(blog_id, sha):
     blob = github.get(url, token=owner[0].github_token.to_token())
     result = blob.json()
     result["content"]= base64.b64decode(result["content"]).decode()
+    return result
+
+@login_required
+def saveBlob(blog_id, sha):
+    body = request.json
+    pathName = body["path"]
+    content = base64.b64encode(bytes(body["content"],"utf-8")).decode('utf-8')
+    blog = db.session.execute(text("select * from blog b join blog_author ba on ba.blog_id=b.id where ba.author_id=:user_id and b.id =:id"), {"user_id": g.user.id, "id":blog_id}).fetchone()
+    owner=db.session.execute(select(Author).where(Author.id==blog.owner_id)).first()
+    url = "repos/"+"/".join(blog.repo.split("/")[:-3])+"/contents/"+pathName
+    payload = {'message': 'update '+pathName, 'committer': {'name':os.getenv("COMMITTER_NAME"),'email':os.getenv("COMMITTER_EMAIL")}, 'content':content, 'sha':sha}
+    blob = github.put(url, token=owner[0].github_token.to_token(), json=payload)
+    result = blob.json()
     return result
 
 def show(blogId):
