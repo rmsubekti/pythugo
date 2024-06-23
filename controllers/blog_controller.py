@@ -18,26 +18,37 @@ def index():
 @login_required
 def create():
     token =g.user.github_token.to_token()
-    error = None
+    error = ""
     if request.method == "POST":
-        repo = request.form["repo"]
-        tree = github.get('repos/'+repo, token=token)
-        data = tree.json()
-        ok = False
-        for path in data["tree"]:
-            if path["path"] == "content" and path["type"] == "tree":
-                ok = True
-                break
-        if ok :
-            v = repo.split("/")
-            blog = Blog(name=v[1], branch=v[4],repo=repo, owner_id=g.user.id, authors=[g.user])
+        try:
+            repo = request.form["repo"]
+            tree = github.get('repos/'+repo, token=token)
+            data = tree.json()
+            if not tree.ok:
+                raise ValueError
 
-            db.session.add(blog)
-            db.session.commit()
-            return redirect('/blog')
+            ok = False
+            for path in data["tree"]:
+                if path["path"] == "content" and path["type"] == "tree":
+                    ok = True
+                    break
+            if ok :
+                v = repo.split("/")
+                blog = Blog(name=v[1], branch=v[4],repo=repo, owner_id=g.user.id, authors=[g.user])
+
+                db.session.add(blog)
+                db.session.commit()
+                return redirect('/blog')
+            else:
+                error = f"Repo '{repo}' does not have blog content."
+        except ValueError:
+            error = "empty repository"
         else:
-            error = f"Repo '{repo}' does not have blog content."
-    flash(error)
+            print("something wrong")
+
+    if error:
+        flash(error)
+        
     repos = github.get('user/repos?per_page=100', token=token)
     data= repos.json()
     return render_template("blog/create.html", repos=data)
