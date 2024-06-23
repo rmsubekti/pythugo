@@ -72,10 +72,15 @@ editor.getMarkdown();
       });
       document.getElementById(`${type}-${sha}`).appendChild(newList)
     } else {
+      var splitter = "\n"
       var md = data.content.split("---\n");
+      if (md.length <2) {
+        splitter = "\r\n"
+        md = data.content.split("---\r\n");
+      }
       editor.setMarkdown(md[2],true);
       console.log(md[1]);
-      const props = md[1].split("\n");
+      const props = md[1].split(splitter);
       document.getElementById("sidebar-prop").innerHTML=""
 
       for (let i = 0; i < props.length; i++) {
@@ -92,7 +97,7 @@ editor.getMarkdown();
               if (element.includes(":")) {
                 break;
               }
-              text+="\n"+element;
+              text+=splitter+element;
             }
           }
           AddInput(label,text, inputType);
