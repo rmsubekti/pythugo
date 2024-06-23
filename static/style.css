@@ -133,9 +133,17 @@ html {
     min-width: 10em;
   }
 
-  .sidebar-tree{
-    max-width: 250px;
-    max-height: 80vh;
+  .blog-editor {
+    display: flex;
+  }
+
+  .blog-editor .sidebar-tree{
+    width: 250px;
+    height: 85vh;
     overflow-x: scroll;
     overflow-y: scroll;
+  }
+  .blog-editor .editor{
+    height: 85vh !important;
+    min-width: 500px;
   }

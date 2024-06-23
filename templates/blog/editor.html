@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block head %}
+  <link rel="stylesheet" href="/static/toastui/toastui-editor.min.css" />
+{% endblock %}
 
 {% block header %}
 <h1>{{ blog.name}}</h1>
@@ -6,6 +9,7 @@ branch {{blog.branch}}
 {% endblock %}
 
 {%- block content -%}
+<div class="blog-editor">
 <div class="sidebar-tree">
   <ul>
     {% for item in data.tree %}
@@ -17,11 +21,24 @@ branch {{blog.branch}}
     {% endfor %}
   </ul>
 </div>
-
+<div id="editor" class="editor"></div>
+</div>
 {%- endblock -%}
 
 {% block footer %}
+<script src="/static/toastui/toastui-editor-all.min.js"></script>
 <script type="text/javascript">
+const Editor = toastui.Editor;
+
+const editor = new Editor({
+  el: document.querySelector('#editor'),
+  height: '500px',
+  initialEditType: 'wysiwyg',
+  previewStyle: 'vertical'
+});
+
+editor.getMarkdown();
+
   async function openItem(type, sha) {
     const response = await fetch(`/blog/{{blog.id}}/${type}/${sha}`);
     const data = await response.json();
@@ -41,7 +58,8 @@ branch {{blog.branch}}
       });
       document.getElementById(`${type}-${sha}`).appendChild(newList)
     } else {
-      console.log(data);
+      editor.setMarkdown(data.content,true);
+      console.log(data.content);
     }
   }
 </script>
