@@ -15,13 +15,16 @@ branch {{blog.branch}}
     {% for item in data.tree %}
     {% if item.path == "content" %}
     <li id="{{item.type}}-{{item.sha}}">
-      <div onclick=openItem("{{item.type}}","{{item.sha}}");>{{item.path}}</div>
+      <div onclick=openItem("{{item.type}}","{{item.sha}}");>
+        {% if item.type == "tree" %}📁{% endif %} {{item.path}}
+      </div>
     </li>
     {% endif %}
     {% endfor %}
   </ul>
 </div>
 <div id="editor" class="editor"></div>
+<div class="sidebar-prop" id="sidebar-prop"></div>
 </div>
 {%- endblock -%}
 
@@ -34,7 +37,8 @@ const editor = new Editor({
   el: document.querySelector('#editor'),
   height: '500px',
   initialEditType: 'wysiwyg',
-  previewStyle: 'vertical'
+  previewStyle: 'vertical',
+  initialValue:"## select a markdown file from left sidebar to edit"
 });
 
 editor.getMarkdown();
@@ -48,7 +52,17 @@ editor.getMarkdown();
         const itemList = document.createElement("li");
         itemList.setAttribute("id", `${v.type}-${v.sha}`)
         const itemContent = document.createElement("div");
-        const text = document.createTextNode(v.path);
+        var icon = "";
+        if (v.path.endsWith(".md")) {
+          icon="📜 ";
+        }
+        if (v.path.endsWith(".png") || v.path.endsWith(".jpg") || v.path.endsWith(".JPG")) {
+          icon="🖼️ ";
+        }
+        if (v.type === "tree") {
+          icon="📁 ";
+        }
+        const text = document.createTextNode(icon+v.path);
         if (v.path.endsWith(".md") || v.type === "tree") {
           itemContent.setAttribute("onclick", `openItem("${v.type}", "${v.sha}")`)
         }
@@ -58,9 +72,50 @@ editor.getMarkdown();
       });
       document.getElementById(`${type}-${sha}`).appendChild(newList)
     } else {
-      editor.setMarkdown(data.content,true);
-      console.log(data.content);
+      var md = data.content.split("---\n");
+      editor.setMarkdown(md[2],true);
+      console.log(md[1]);
+      const props = md[1].split("\n");
+      document.getElementById("sidebar-prop").innerHTML=""
+
+      for (let i = 0; i < props.length; i++) {
+        const e = props[i];
+        var inputType = "input";
+        if(e !="" && e.includes(":")){
+          const prop = e.split(":");
+          const label = prop[0];
+          var text = prop[1];
+          if (text.includes(">")) {
+            inputType="textarea"
+            for (let x = i+1; x < props.length; x++) {
+              const element = props[x];
+              if (element.includes(":")) {
+                break;
+              }
+              text+="\n"+element;
+            }
+          }
+          AddInput(label,text, inputType);
+        }
+      }
     }
+  }
+
+  function AddInput(lbl, text, inputType) {
+    const container = document.createElement("div");
+    const label = document.createElement("div").appendChild(document.createTextNode(lbl.charAt(0).toUpperCase() + lbl.slice(1)));
+    const input = document.createElement(inputType);
+    input.setAttribute("name", lbl)
+    input.setAttribute("id", "inputValue")
+    if (inputType == "textarea") {
+      input.appendChild(document.createTextNode(text));
+
+    }else{
+      input.setAttribute("value", text)
+    }
+    container.appendChild(label);
+    container.appendChild(input);
+    document.getElementById("sidebar-prop").appendChild(container); 
   }
 </script>
 {% endblock%}

@@ -5,7 +5,7 @@ html {
   }
   
   body {
-    max-width: 960px;
+    max-width: 100%;
     margin: 0 auto;
     background: white;
   }
@@ -138,12 +138,31 @@ html {
   }
 
   .blog-editor .sidebar-tree{
-    width: 250px;
+    width: 300px;
     height: 85vh;
     overflow-x: scroll;
     overflow-y: scroll;
   }
+  .blog-editor .sidebar-prop{
+    width: 300px;
+    height: 85vh;
+  }
+
+  .blog-editor .sidebar-tree ul{
+    padding: 0;
+    margin: 0;
+  }
+
+  .blog-editor .sidebar-tree ul, .blog-editor .sidebar-tree li{
+    list-style: none;
+  }
+
+  .blog-editor .sidebar-tree li,.blog-editor .sidebar-tree li>ul{
+    padding-left: 5px;
+    margin: 0;
+  }
   .blog-editor .editor{
     height: 85vh !important;
     min-width: 500px;
+    width: 100%;
   }

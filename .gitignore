@@ -7,3 +7,4 @@ passenger_wsgi.py
 public
 tmp
 migrations/*
+stderr.log
