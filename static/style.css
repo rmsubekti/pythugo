@@ -148,17 +148,14 @@ html {
     height: 85vh;
   }
 
-  .blog-editor .sidebar-tree ul{
+  .blog-editor .sidebar-tree ul, .blog-editor .sidebar-tree li{
     padding: 0;
     margin: 0;
-  }
-
-  .blog-editor .sidebar-tree ul, .blog-editor .sidebar-tree li{
     list-style: none;
   }
 
-  .blog-editor .sidebar-tree li,.blog-editor .sidebar-tree li>ul{
-    padding-left: 5px;
+  .blog-editor .sidebar-tree li ul{
+    padding-left: 18px;
     margin: 0;
   }
   .blog-editor .editor{

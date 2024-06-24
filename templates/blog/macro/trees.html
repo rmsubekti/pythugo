@@ -1,0 +1,21 @@
+{%- macro trees(data) -%}
+    {%- for item in data -%}
+        <li>
+            {% if item.type == "tree" %}
+                <details>
+                    <summary id="{{item.sha}}" style="cursor: pointer;"><i class="fa fa-folder" style="color: rgba(163, 163, 17, 0.63);" aria-hidden="true"></i> {{item.name}}</summary>
+                    {% if item.type == "tree" %}
+                        <ul>
+                            <!-- <button onclick="console.log(`{{item.path}}`)">New File</button> -->
+                            {{ trees(item.tree) }}
+                        </ul>
+                    {% endif %}
+                </details>
+            {% else %}
+            <div {% if item.name.endswith('.md') %}style="cursor: pointer;" id="{{item.sha}}" onclick="openMD('{{item.sha}}','{{item.path}}')" {% endif %}>
+                {% if item.name.endswith('.md') %}<i class="fa fa-file-text" style="color: rgba(10, 93, 170, 0.63);" aria-hidden="true"></i>{% else %}<i class="fa fa-file-image-o" style="color: rgba(133, 10, 170, 0.63);" aria-hidden="true"></i>{% endif %} {{item.name}}
+            </div>
+            {% endif %}
+        </li>
+    {%- endfor -%}
+{%- endmacro -%}
