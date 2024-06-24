@@ -1,3 +1,5 @@
 GITHUB_CLIENT_ID=<<secret>>
 GITHUB_CLIENT_SECRET=<<secret>>
 MYSQL_URI=mysql+mysqlconnector://pythugo:pythugo@127.0.0.1:3306/pythugo
+COMMITTER_NAME=YAKALEE
+COMMITTER_EMAIL=yakale@notemail.com
