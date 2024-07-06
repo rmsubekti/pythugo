@@ -9,7 +9,5 @@ Stack:
 - Pyhton AuthLib
 - Github Oauth & Repository API
 
-Demo : https://mad.my.id
-
 The app will look for a directory "content" at the root repo.
 This app is still in development. If you want to test this app, please use dummy repo or unused repo. 
